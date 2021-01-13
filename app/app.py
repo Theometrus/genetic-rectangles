@@ -36,6 +36,46 @@ class Entity:
         pass
 
 
+# Enemy movement behaviour
+class Bounce:
+    def move(self, entity):
+        entity.rect.move_ip(entity.vel[0], entity.vel[1])
+        entity.x += entity.vel[0]
+        entity.y += entity.vel[1]
+
+    def wall_collide_handler(self, entity):
+        entity.vel[0] *= -1
+        entity.vel[1] *= -1
+
+
+class Enemy(Entity):
+    def __init__(self, x, y, color, width, height, move_strategy, velocity):
+        super().__init__(x, y, color, width, height)
+        self.move_strategy = move_strategy
+        self.x = x
+        self.original_x = x
+        self.y = y
+        self.original_y = y
+        self.color = color
+        self.width = width
+        self.height = height
+        self.vel = list(velocity)
+        self.original_vel = list(velocity)
+
+    def tick(self):
+        self.move()
+
+    def move(self):
+        self.move_strategy.move(self)
+
+    def wall_collide_handler(self):
+        self.move_strategy.wall_collide_handler(self)
+
+    def clone(self):
+        return Enemy(self.original_x, self.original_y, self.color,
+                     self.width, self.height, Bounce(), self.original_vel)
+
+
 class Goal(Entity):
     pass
 
@@ -119,8 +159,8 @@ class Population:
                 player.fitness = 1.0/1600.0 + 1.0 / \
                     pow((abs(player.rect.x - goal.rect.x) +
                          abs(player.rect.y - goal.rect.y)), 2)
-            # if player.killed:
-            #     player.fitness *= 0.9
+            if player.killed:
+                player.fitness *= 0.9
             self.total_fitness += player.fitness
 
     def select(self):
@@ -202,19 +242,37 @@ class Population:
 
 class Referee:
     # Enforces the rules by making players die on wall collisions and win on goal collision
+    def validate_collision(self, entity, collidable_entities):
+        if entity.rect.collidelist(collidable_entities) != -1:
+            return True
+
+        return False
+
+    def check_out_of_bounds(self, entity):
+        if (entity.rect.x + entity.rect.width > settings.RESOLUTION[0]
+                or entity.rect.x < 0
+                or entity.rect.y + entity.rect.height > settings.RESOLUTION[1]
+                or entity.rect.y < 0):
+            return True
+
     def eliminate_wall_huggers(self, players, walls):
         for player in players:
-            if player.rect.collidelist(walls) != -1:
+            if self.validate_collision(player, walls) or self.check_out_of_bounds(player):
                 player.die()
-            elif (player.rect.x + player.rect.width > settings.RESOLUTION[0]
-                  or player.rect.x < 0
-                  or player.rect.y + player.rect.height > settings.RESOLUTION[1]
-                  or player.rect.y < 0):
+
+    def find_enemy_wall_collisions(self, enemies, walls):
+        for enemy in enemies:
+            if self.validate_collision(enemy, walls) or self.check_out_of_bounds(enemy):
+                enemy.wall_collide_handler()
+
+    def find_enemy_player_collisions(self, enemies, players):
+        for player in players:
+            if self.validate_collision(player, enemies):
                 player.die()
 
     def find_winners(self, players, goal):
         for player in players:
-            if player.rect.colliderect(goal):
+            if self.validate_collision(player, [goal]):
                 player.win()
 
 
@@ -234,14 +292,49 @@ def main():
 
     # Rudimentary level creation section
     goal = Goal(10, 200, (0, 255, 0), 10, 10)
+
     walls = []
+    walls.append(Wall(0, 130, (0, 0, 0), 800, 5))
+    walls.append(Wall(0, 290, (0, 0, 0), 800, 5))
     # walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
-    walls.append(Wall(400, 200, (0, 0, 0), 5, 400))
-    walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
+    # walls.append(Wall(400, 200, (0, 0, 0), 5, 400))
+    # walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
     # walls.append(Wall(200, 320, (0, 0, 0), 5, 300))
+
+    enemies = []
+    original_enemies = []
+    original_enemies.append(
+        Enemy(360, 140, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    original_enemies.append(
+        Enemy(360, 165, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    original_enemies.append(
+        Enemy(360, 190, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    original_enemies.append(
+        Enemy(360, 215, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    original_enemies.append(
+        Enemy(360, 240, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    original_enemies.append(
+        Enemy(360, 265, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+
+    original_enemies.append(
+        Enemy(100, 140, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    original_enemies.append(
+        Enemy(100, 165, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    original_enemies.append(
+        Enemy(100, 190, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    original_enemies.append(
+        Enemy(100, 215, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    original_enemies.append(
+        Enemy(100, 240, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    original_enemies.append(
+        Enemy(100, 265, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+
+    for enemy in original_enemies:
+        enemies.append(enemy.clone())
 
     entities += walls
     entities += population.players
+    entities += enemies
     entities.append(goal)
 
     while running:
@@ -264,11 +357,23 @@ def main():
 
         referee.eliminate_wall_huggers(population.players, walls)
         referee.find_winners(population.players, goal)
+        referee.find_enemy_wall_collisions(enemies, walls)
+        referee.find_enemy_player_collisions(enemies, population.players)
 
         if population.all_dead():
+
             entities = [x for x in entities if x not in population.players]
+            entities = [x for x in entities if x not in enemies]
             population.next_generation(goal)
             entities += population.players
+
+            # Reset enemies
+            enemies = []
+            for enemy in original_enemies:
+                enemies.append(enemy.clone())
+
+            entities += enemies
+
             print("Current generation: " + str(population.current_gen))
             print("Current best steps: " + str(population.max_steps))
             print("=====================")
