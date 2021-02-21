@@ -10,7 +10,7 @@ the best players reproduce and mutate, resulting in a gradual increase in the fi
 To give some context to what is being shown on the screen:
 
 * 🟦 Blue rectangles represent the players of the population
-* 🟥 The red rectangle is the best player/champion of the previous *generation*. They are placed into the next generation without mutations so that progress doesn't get lost
+* 🟥 The red rectangle is the best player/champion of the *previous* generation. They are placed into the next generation without mutations so that progress doesn't get lost
 * 🟩 The green rectangle is the goal which the players must reach
 * 🟨 Yellow rectangles are enemies which also kill players on touch
 * ⬛ Black rectangles are walls which kill players on touch
