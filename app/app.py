@@ -2,7 +2,6 @@ import pygame
 import sys
 import random
 import numpy as np
-import math
 
 import settings
 
@@ -294,40 +293,40 @@ def main():
     goal = Goal(10, 200, (0, 255, 0), 10, 10)
 
     walls = []
-    walls.append(Wall(0, 130, (0, 0, 0), 800, 5))
-    walls.append(Wall(0, 290, (0, 0, 0), 800, 5))
+    # walls.append(Wall(0, 130, (0, 0, 0), 800, 5))
+    # walls.append(Wall(0, 290, (0, 0, 0), 800, 5))
     # walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
-    # walls.append(Wall(400, 200, (0, 0, 0), 5, 400))
-    # walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
+    walls.append(Wall(400, 200, (0, 0, 0), 5, 400))
+    walls.append(Wall(200, 0, (0, 0, 0), 5, 300))
     # walls.append(Wall(200, 320, (0, 0, 0), 5, 300))
 
     enemies = []
     original_enemies = []
-    original_enemies.append(
-        Enemy(360, 140, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
-    original_enemies.append(
-        Enemy(360, 165, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-    original_enemies.append(
-        Enemy(360, 190, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
-    original_enemies.append(
-        Enemy(360, 215, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-    original_enemies.append(
-        Enemy(360, 240, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
-    original_enemies.append(
-        Enemy(360, 265, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-
-    original_enemies.append(
-        Enemy(100, 140, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-    original_enemies.append(
-        Enemy(100, 165, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
-    original_enemies.append(
-        Enemy(100, 190, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-    original_enemies.append(
-        Enemy(100, 215, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
-    original_enemies.append(
-        Enemy(100, 240, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
-    original_enemies.append(
-        Enemy(100, 265, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 140, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 165, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 190, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 215, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 240, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(360, 265, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    #
+    # original_enemies.append(
+    #     Enemy(100, 140, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(100, 165, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(100, 190, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(100, 215, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(100, 240, (255, 255, 0), 20, 20, Bounce(), [-5.0, 0.0]))
+    # original_enemies.append(
+    #     Enemy(100, 265, (255, 255, 0), 20, 20, Bounce(), [5.0, 0.0]))
 
     for enemy in original_enemies:
         enemies.append(enemy.clone())
