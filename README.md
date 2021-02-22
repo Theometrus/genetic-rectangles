@@ -12,8 +12,8 @@ To give some context to what is being shown on the screen:
 * 🟦 Blue rectangles represent the players of the population
 * 🟥 The red rectangle is the best player/champion of the *previous* generation. They are placed into the next generation without mutations so that progress doesn't get lost
 * 🟩 The green rectangle is the goal which the players must reach
-* 🟨 Yellow rectangles are enemies which also kill players on touch
 * ⬛ Black rectangles are walls which kill players on touch
+* 🟨 Yellow rectangles are enemies which also kill players on touch
 
 Each GIF represents one particular *level* of the simulation. GIFs start out during *generation one*, when players are mostly behaving randomly. The GIFs then
 speed up as time passes and the population evolves and improves. When the GIF returns to regular speed, the solution found by the genetic algorithm (at that iteration)
